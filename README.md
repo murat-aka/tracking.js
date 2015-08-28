@@ -22,7 +22,7 @@ npm install tracking
 ```
 ## Examples
 
-[01 - Face Tracker](http://murat-aka.github.io/face_hello_world.html)
+[01 - Face Tracker](http://murat-aka.github.io/tracking.js/examples/face_hello_world.html)
 
 [02 - Color Tracker](http://murat-aka.github.io/tracking.js/examples/color_hello_world.html)
 
