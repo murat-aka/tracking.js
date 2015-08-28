@@ -23,6 +23,7 @@ npm install tracking
 ## Examples
 
 [01 - Brief](http://murat-aka.github.io/tracking.js/examples/brief.html)
+
 [02 - Color Tracker](http://murat-aka.github.io/tracking.js/examples/color_hello_world.html)
 
 
