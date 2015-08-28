@@ -26,7 +26,11 @@ npm install tracking
 
 [02 - Color Tracker](http://murat-aka.github.io/tracking.js/examples/color_hello_world.html)
 
-[03 - Brief](http://murat-aka.github.io/tracking.js/examples/brief.html)
+[03 - Feature Matching](http://murat-aka.github.io/tracking.js/examples/brief.html)
+
+[04 - Draw Something](http://murat-aka.github.io/tracking.js/examples/color_draw_something.html)
+
+[05 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
 
 
 
