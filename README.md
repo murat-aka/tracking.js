@@ -30,7 +30,11 @@ npm install tracking
 
 [04 - Draw Something](http://murat-aka.github.io/tracking.js/examples/color_draw_something.html)
 
-[05 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
+[05 - Face Camera](http://murat-aka.github.io/tracking.js/examples/face_camera.html)
+
+[06 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
+
+
 
 
 
