@@ -32,7 +32,11 @@ npm install tracking
 
 [05 - Face Camera](http://murat-aka.github.io/tracking.js/examples/face_camera.html)
 
-[06 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
+[06 - Fast](http://murat-aka.github.io/tracking.js/examples/tracking.js/examples/fast.html)
+
+[07 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
+
+
 
 
 
