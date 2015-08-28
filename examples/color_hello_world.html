@@ -33,7 +33,7 @@
       var img = document.getElementById('img');
       var demoContainer = document.querySelector('.demo-container');
 
-      var tracker = new tracking.ColorTracker(['magenta', 'green', 'yellow']);
+      var tracker = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
 
       tracker.on('track', function(event) {
         event.data.forEach(function(rect) {
