@@ -32,8 +32,16 @@
     window.onload = function() {
       var img = document.getElementById('img');
       var demoContainer = document.querySelector('.demo-container');
+      
+      
+      tracking.ColorTracker.registerColor('green', function(r, g, b) {
+      if (r < 50 && g > 200 && b < 50) {
+        return true;
+      }
+           return false;
+      });
 
-      var tracker = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
+      var tracker = new tracking.ColorTracker(['magenta', 'green', 'yellow']);
 
       tracker.on('track', function(event) {
         event.data.forEach(function(rect) {
