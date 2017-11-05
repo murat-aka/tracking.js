@@ -22,21 +22,21 @@ npm install tracking
 ```
 ## Examples
 
-[01 - Face Tracker](http://murat-aka.github.io/tracking.js/examples/face_hello_world.html)
+[01 - Face Tracker](http://eduardolundgren.github.io/tracking.js/examples/face_hello_world.html)
 
-[02 - Color Tracker](http://murat-aka.github.io/tracking.js/examples/color_hello_world.html)
+[02 - Color Tracker](http://eduardolundgren.github.io/tracking.js/examples/color_hello_world.html)
 
-[03 - Feature Matching](http://murat-aka.github.io/tracking.js/examples/brief.html)
+[03 - Feature Matching](http://eduardolundgren.github.io/tracking.js/examples/brief.html)
 
-[04 - Draw Something](http://murat-aka.github.io/tracking.js/examples/color_draw_something.html)
+[04 - Draw Something](http://eduardolundgren.github.io/tracking.js/examples/color_draw_something.html)
 
-[05 - Face Camera](http://murat-aka.github.io/tracking.js/examples/face_camera.html)
+[05 - Face Camera](http://eduardolundgren.github.io/tracking.js/examples/face_camera.html)
 
-[06 - Fast](http://murat-aka.github.io/tracking.js/examples/fast.html)
+[06 - Fast](http://eduardolundgren.github.io/tracking.js/examples/fast.html)
 
-[07 - Face Fish Tank](http://murat-aka.github.io/tracking.js/examples/face_fish_tank.html)
+[07 - Face Fish Tank](http://eduardolundgren.github.io/tracking.js/examples/face_fish_tank.html)
 
-[08 - color_video](http://murat-aka.github.io/tracking.js/examples/color_video.html)
+[08 - color_video](http://eduardolundgren.github.io/tracking.js/examples/color_video.html)
 
 
 
