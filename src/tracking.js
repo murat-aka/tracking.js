@@ -55,19 +55,14 @@
    * @param {object} opt_options Optional configuration to the tracker.
    */
   tracking.initUserMedia_ = function(element, opt_options) {
-    window.navigator.getUserMedia({
+    window.navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: opt_options.audio
-    }, function(stream) {
-        try {
-          element.src = window.URL.createObjectURL(stream);
-        } catch (err) {
-          element.src = stream;
-        }
-      }, function() {
-        throw Error('Cannot capture user camera.');
-      }
-    );
+      audio: (opt_options && opt_options.audio) ? true : false,
+    }).then(function(stream) {
+      element.srcObject = stream;
+    }).catch(function(err) {
+      throw Error('Cannot capture user camera.');
+    });
   };
 
   /**
@@ -234,6 +229,8 @@
     var width;
     var height;
 
+
+// FIXME here the video display size of the analysed size
     var resizeCanvas_ = function() {
       width = element.offsetWidth;
       height = element.offsetHeight;
@@ -243,6 +240,11 @@
     resizeCanvas_();
     element.addEventListener('resize', resizeCanvas_);
 
+
+// FIXME: do a process function - it is up to the caller to handle the frequency of detection
+// it seems all handled in the tracking.TrackerTask..
+// so in short, remove the tracking.TrackerTask from here
+// if the user want to use it, it can create it himself
     var requestId;
     var requestAnimationFrame_ = function() {
       requestId = window.requestAnimationFrame(function() {
