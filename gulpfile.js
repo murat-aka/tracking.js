@@ -37,10 +37,7 @@ gulp.task('build', function() {
     'src/trackers/Tracker.js',
     'src/trackers/TrackerTask.js',
     'src/trackers/ColorTracker.js',
-    'src/trackers/ObjectTracker.js',
-    'src/trackers/LandmarksTracker.js',
-    'src/alignment/Regressor.js',
-    'src/alignment/LBF.js'
+    'src/trackers/ObjectTracker.js'
   ];
 
   return gulp.src(files)

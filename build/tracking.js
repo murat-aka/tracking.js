@@ -1,7 +1,7 @@
 /**
- * tracking - A modern approach for Computer Vision on the web.
+ * tracking.js - A modern approach for Computer Vision on the web.
  * @author Eduardo Lundgren <edu@rdo.io>
- * @version v1.1.3
+ * @version v1.0.0
  * @link http://trackingjs.com
  * @license BSD
  */
@@ -62,14 +62,19 @@
    * @param {object} opt_options Optional configuration to the tracker.
    */
   tracking.initUserMedia_ = function(element, opt_options) {
-    window.navigator.mediaDevices.getUserMedia({
+    window.navigator.getUserMedia({
       video: true,
-      audio: (opt_options && opt_options.audio) ? true : false,
-    }).then(function(stream) {
-      element.srcObject = stream;
-    }).catch(function(err) {
-      throw Error('Cannot capture user camera.');
-    });
+      audio: opt_options.audio
+    }, function(stream) {
+        try {
+          element.src = window.URL.createObjectURL(stream);
+        } catch (err) {
+          element.src = stream;
+        }
+      }, function() {
+        throw Error('Cannot capture user camera.');
+      }
+    );
   };
 
   /**
@@ -457,7 +462,7 @@
   tracking.Canvas.loadImage = function(canvas, src, x, y, width, height, opt_callback) {
     var instance = this;
     var img = new window.Image();
-    img.crossOrigin = '*';
+
     img.onload = function() {
       var context = canvas.getContext('2d');
       canvas.width = width;
@@ -542,7 +547,7 @@
   tracking.Image = {};
 
   /**
-   * Computes gaussian blur. Adapted from
+   * Computes gaussian blur. Adpated from
    * https://github.com/kig/canvasfilters.
    * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
    * @param {number} width The image width.
@@ -709,7 +714,7 @@
    * signals: a vertical and a horizontal projection. The convolution is
    * performed by sliding the kernel over the image, generally starting at the
    * top left corner, so as to move the kernel through all the positions where
-   * the kernel fits entirely within the boundaries of the image. Adapted from
+   * the kernel fits entirely within the boundaries of the image. Adpated from
    * https://github.com/kig/canvasfilters.
    * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
    * @param {number} width The image width.
@@ -758,7 +763,7 @@
    * signals: a vertical and a horizontal projection. The convolution is
    * performed by sliding the kernel over the image, generally starting at the
    * top left corner, so as to move the kernel through all the positions where
-   * the kernel fits entirely within the boundaries of the image. Adapted from
+   * the kernel fits entirely within the boundaries of the image. Adpated from
    * https://github.com/kig/canvasfilters.
    * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
    * @param {number} width The image width.
@@ -807,7 +812,7 @@
    * vertical and a horizontal projection. The convolution is performed by
    * sliding the kernel over the image, generally starting at the top left
    * corner, so as to move the kernel through all the positions where the
-   * kernel fits entirely within the boundaries of the image. Adapted from
+   * kernel fits entirely within the boundaries of the image. Adpated from
    * https://github.com/kig/canvasfilters.
    * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
    * @param {number} width The image width.
@@ -828,7 +833,7 @@
    * find edges in the image. The way we implement the Sobel filter here is by
    * first grayscaling the image, then taking the horizontal and vertical
    * gradients and finally combining the gradient images to make up the final
-   * image. Adapted from https://github.com/kig/canvasfilters.
+   * image. Adpated from https://github.com/kig/canvasfilters.
    * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
    * @param {number} width The image width.
    * @param {number} height The image height.
@@ -854,38 +859,6 @@
 
     return output;
   };
-
-  /**
-   * Equalizes the histogram of a grayscale image, normalizing the
-   * brightness and increasing the contrast of the image.
-   * @param {pixels} pixels The grayscale pixels in a linear array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @return {array} The equalized grayscale pixels in a linear array.
-   */
-  tracking.Image.equalizeHist = function(pixels, width, height){
-    var equalized = new Uint8ClampedArray(pixels.length);
-
-    var histogram = new Array(256);
-    for(var i=0; i < 256; i++) histogram[i] = 0;
-
-    for(var i=0; i < pixels.length; i++){
-      equalized[i] = pixels[i];
-      histogram[pixels[i]]++;
-    }
-
-    var prev = histogram[0];
-    for(var i=0; i < 256; i++){
-      histogram[i] += prev;
-      prev = histogram[i];
-    }
-
-    var norm = 255 / pixels.length;
-    for(var i=0; i < pixels.length; i++)
-      equalized[i] = (histogram[pixels[i]] * norm + 0.5) | 0;
-
-    return equalized;
-  }
 
 }());
 
@@ -1208,7 +1181,7 @@
   tracking.Brief.randomWindowOffsets_ = null;
 
   /**
-   * Generates a binary string for each found keypoints extracted using an
+   * Generates a brinary string for each found keypoints extracted using an
    * extractor method.
    * @param {array} The grayscale pixels in a linear [p1,p2,...] array.
    * @param {number} width The image width.
@@ -1404,7 +1377,7 @@
   tracking.Fast.THRESHOLD = 40;
 
   /**
-   * Caches coordinates values of the circle surrounding the pixel candidate p.
+   * Caches coordinates values of the circle surounding the pixel candidate p.
    * @type {Object.<number, Int32Array>}
    * @private
    * @static
@@ -1460,7 +1433,7 @@
   };
 
   /**
-   * Checks if the circle pixel is brighter than the candidate pixel p by
+   * Checks if the circle pixel is brigther than the candidate pixel p by
    * a threshold.
    * @param {number} circlePixel The circle pixel value.
    * @param {number} p The value of the candidate pixel p.
@@ -1532,8 +1505,8 @@
   /**
    * Fast check to test if the candidate pixel is a trivially excluded value.
    * In order to be a corner, the candidate pixel value should be darker or
-   * brighter than 9-12 surrounding pixels, when at least three of the top,
-   * bottom, left and right pixels are brighter or darker it can be
+   * brigther than 9-12 surrouding pixels, when at least three of the top,
+   * bottom, left and right pixels are brither or darker it can be
    * automatically excluded improving the performance.
    * @param {number} circlePixel The circle pixel value.
    * @param {number} p The value of the candidate pixel p.
@@ -1716,7 +1689,7 @@
    * for each iteration. The `fn` callback receives the following parameters:
    * `(r,g,b,a,index,i,j)`, where `r,g,b,a` represents the pixel color with
    * alpha channel, `index` represents the position in the major-row order
-   * array and `i,j` the respective indexes positions in two dimensions.
+   * array and `i,j` the respective indexes positions in two dimentions.
    * @param {array} pixels The pixels in a linear [r,g,b,a,...] array to loop
    *     through.
    * @param {number} width The image width.
@@ -1736,158 +1709,8 @@
     }
   };
 
-  /**
-   * Calculates the per-element subtraction of two NxM matrices and returns a 
-   * new NxM matrix as the result.
-   * @param {matrix} a The first matrix.
-   * @param {matrix} a The second matrix.
-   * @static
-   */
-  tracking.Matrix.sub = function(a, b){
-    var res = tracking.Matrix.clone(a);
-    for(var i=0; i < res.length; i++){
-      for(var j=0; j < res[i].length; j++){
-        res[i][j] -= b[i][j]; 
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Calculates the per-element sum of two NxM matrices and returns a new NxM
-   * NxM matrix as the result.
-   * @param {matrix} a The first matrix.
-   * @param {matrix} a The second matrix.
-   * @static
-   */
-  tracking.Matrix.add = function(a, b){
-    var res = tracking.Matrix.clone(a);
-    for(var i=0; i < res.length; i++){
-      for(var j=0; j < res[i].length; j++){
-        res[i][j] += b[i][j]; 
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Clones a matrix (or part of it) and returns a new matrix as the result.
-   * @param {matrix} src The matrix to be cloned.
-   * @param {number} width The second matrix.
-   * @static
-   */
-  tracking.Matrix.clone = function(src, width, height){
-    width = width || src[0].length;
-    height = height || src.length;
-    var temp = new Array(height);
-    var i = height;
-    while(i--){
-      temp[i] = new Array(width);
-      var j = width;
-      while(j--) temp[i][j] = src[i][j];
-    } 
-    return temp;
-  }
-
-  /**
-   * Multiply a matrix by a scalar and returns a new matrix as the result.
-   * @param {number} scalar The scalar to multiply the matrix by.
-   * @param {matrix} src The matrix to be multiplied.
-   * @static
-   */
-  tracking.Matrix.mulScalar = function(scalar, src){
-    var res = tracking.Matrix.clone(src);
-    for(var i=0; i < src.length; i++){
-      for(var j=0; j < src[i].length; j++){
-        res[i][j] *= scalar;
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Transpose a matrix and returns a new matrix as the result.
-   * @param {matrix} src The matrix to be transposed.
-   * @static
-   */
-  tracking.Matrix.transpose = function(src){
-    var transpose = new Array(src[0].length);
-    for(var i=0; i < src[0].length; i++){
-      transpose[i] = new Array(src.length);
-      for(var j=0; j < src.length; j++){
-        transpose[i][j] = src[j][i];
-      }
-    }
-    return transpose;
-  }
-
-  /**
-   * Multiply an MxN matrix with an NxP matrix and returns a new MxP matrix
-   * as the result.
-   * @param {matrix} a The first matrix.
-   * @param {matrix} b The second matrix.
-   * @static
-   */
-  tracking.Matrix.mul = function(a, b) {
-    var res = new Array(a.length);
-    for (var i = 0; i < a.length; i++) {
-      res[i] = new Array(b[0].length);
-      for (var j = 0; j < b[0].length; j++) {
-        res[i][j] = 0;            
-        for (var k = 0; k < a[0].length; k++) {
-          res[i][j] += a[i][k] * b[k][j];
-        }
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Calculates the absolute norm of a matrix.
-   * @param {matrix} src The matrix which norm will be calculated.
-   * @static
-   */
-  tracking.Matrix.norm = function(src){
-    var res = 0;
-    for(var i=0; i < src.length; i++){
-      for(var j=0; j < src[i].length; j++){
-        res += src[i][j]*src[i][j];
-      }
-    }
-    return Math.sqrt(res);
-  }
-
-  /**
-   * Calculates and returns the covariance matrix of a set of vectors as well
-   * as the mean of the matrix.
-   * @param {matrix} src The matrix which covariance matrix will be calculated.
-   * @static
-   */
-  tracking.Matrix.calcCovarMatrix = function(src){
-
-    var mean = new Array(src.length);
-    for(var i=0; i < src.length; i++){
-      mean[i] = [0.0];
-      for(var j=0; j < src[i].length; j++){
-        mean[i][0] += src[i][j]/src[i].length;
-      }
-    }
-
-    var deltaFull = tracking.Matrix.clone(mean);
-    for(var i=0; i < deltaFull.length; i++){
-      for(var j=0; j < src[0].length - 1; j++){
-        deltaFull[i].push(deltaFull[i][0]);
-      }
-    }
-
-    var a = tracking.Matrix.sub(src, deltaFull);
-    var b = tracking.Matrix.transpose(a);
-    var covar = tracking.Matrix.mul(b,a); 
-    return [covar, mean];
-
-  }
-
 }());
+
 (function() {
   /**
    * EPnp utility.
@@ -2027,7 +1850,7 @@
 
 (function() {
   /**
-   * ColorTracker utility to track colored blobs in a frame using color
+   * ColorTracker utility to track colored blobs in a frrame using color
    * difference evaluation.
    * @constructor
    * @param {string|Array.<string>} opt_colors Optional colors to track.
@@ -2125,7 +1948,7 @@
    * @param {Array.<number>} cloud Major row order array containing all the
    *     points from the desired color, e.g. [x1, y1, c2, y2, ...].
    * @param {number} total Total numbers of pixels of the desired color.
-   * @return {object} Object containing the x, y and estimated z coordinate of
+   * @return {object} Object contaning the x, y and estimated z coordinate of
    *     the blog extracted from the cloud points.
    * @private
    */
@@ -2618,494 +2441,5 @@
   tracking.ObjectTracker.prototype.setStepSize = function(stepSize) {
     this.stepSize = stepSize;
   };
-
-}());
-
-(function() {
-
-
-  tracking.LandmarksTracker = function() {
-    tracking.LandmarksTracker.base(this, 'constructor');
-  }
-
-  tracking.inherits(tracking.LandmarksTracker, tracking.ObjectTracker);
-
-  tracking.LandmarksTracker.prototype.track = function(pixels, width, height) {
-	 
-    var image = {
-      'data': pixels,
-      'width': width,
-      'height': height
-    };
-
-    var classifier = tracking.ViolaJones.classifiers['face'];
-
-    var faces = tracking.ViolaJones.detect(pixels, width, height, 
-      this.getInitialScale(), this.getScaleFactor(), this.getStepSize(), 
-      this.getEdgesDensity(), classifier);
-
-    var landmarks = tracking.LBF.align(pixels, width, height, faces);
-
-    this.emit('track', {
-      'data': {
-        'faces' : faces,
-        'landmarks' : landmarks
-      }
-    });
-
-  }
-
-}());
-
-(function() {
-
-  tracking.LBF = {};
-
-  /**
-   * LBF Regressor utility.
-   * @constructor
-   */
-  tracking.LBF.Regressor = function(maxNumStages){
-    this.maxNumStages = maxNumStages;
-
-    this.rfs = new Array(maxNumStages);
-    this.models = new Array(maxNumStages);
-    for(var i=0; i < maxNumStages; i++){
-      this.rfs[i] = new tracking.LBF.RandomForest(i);
-      this.models[i] = tracking.LBF.RegressorData[i].models;
-    }
-
-    this.meanShape = tracking.LBF.LandmarksData;
-  }
-
-  /**
-   * Predicts the position of the landmarks based on the bounding box of the face.
-   * @param {pixels} pixels The grayscale pixels in a linear array.
-   * @param {number} width Width of the image.
-   * @param {number} height Height of the image.
-   * @param {object} boudingBox Bounding box of the face to be aligned.
-   * @return {matrix} A matrix with each landmark position in a row [x,y].
-   */
-  tracking.LBF.Regressor.prototype.predict = function(pixels, width, height, boundingBox) {
-
-    var images = [];
-    var currentShapes = [];
-    var boundingBoxes = [];
-
-    var meanShapeClone = tracking.Matrix.clone(this.meanShape);
-
-    images.push({
-      'data': pixels,
-      'width': width,
-      'height': height
-    });
-    boundingBoxes.push(boundingBox);
-
-    currentShapes.push(tracking.LBF.projectShapeToBoundingBox_(meanShapeClone, boundingBox));
-
-    for(var stage = 0; stage < this.maxNumStages; stage++){
-      var binaryFeatures = tracking.LBF.Regressor.deriveBinaryFeat(this.rfs[stage], images, currentShapes, boundingBoxes, meanShapeClone);
-      this.applyGlobalPrediction(binaryFeatures, this.models[stage], currentShapes, boundingBoxes);
-    }
-
-    return currentShapes[0];
-  };
-
-  /**
-   * Multiplies the binary features of the landmarks with the regression matrix
-   * to obtain the displacement for each landmark. Then applies this displacement
-   * into the landmarks shape.
-   * @param {object} binaryFeatures The binary features for the landmarks.
-   * @param {object} models The regressor models.
-   * @param {matrix} currentShapes The landmarks shapes.
-   * @param {array} boudingBoxes The bounding boxes of the faces.
-   */
-  tracking.LBF.Regressor.prototype.applyGlobalPrediction = function(binaryFeatures, models, currentShapes, 
-    boundingBoxes){
-
-    var residual = currentShapes[0].length * 2;
-
-    var rotation = [];
-    var deltashape = new Array(residual/2);
-    for(var i=0; i < residual/2; i++){
-      deltashape[i] = [0.0, 0.0];
-    }
-
-    for(var i=0; i < currentShapes.length; i++){
-      for(var j=0; j < residual; j++){
-        var tmp = 0;
-        for(var lx=0, idx=0; (idx = binaryFeatures[i][lx].index) != -1; lx++){
-          if(idx <= models[j].nr_feature){
-            tmp += models[j].data[(idx - 1)] * binaryFeatures[i][lx].value;
-          }
-        }
-        if(j < residual/2){
-          deltashape[j][0] = tmp;
-        }else{
-          deltashape[j - residual/2][1] = tmp;
-        }
-      }
-
-      var res = tracking.LBF.similarityTransform_(tracking.LBF.unprojectShapeToBoundingBox_(currentShapes[i], boundingBoxes[i]), this.meanShape);
-      var rotation = tracking.Matrix.transpose(res[0]);
-
-      var s = tracking.LBF.unprojectShapeToBoundingBox_(currentShapes[i], boundingBoxes[i]);
-      s = tracking.Matrix.add(s, deltashape);
-
-      currentShapes[i] = tracking.LBF.projectShapeToBoundingBox_(s, boundingBoxes[i]);
-
-    }
-  };
-
-  /**
-   * Derives the binary features from the image for each landmark. 
-   * @param {object} forest The random forest to search for the best binary feature match.
-   * @param {array} images The images with pixels in a grayscale linear array.
-   * @param {array} currentShapes The current landmarks shape.
-   * @param {array} boudingBoxes The bounding boxes of the faces.
-   * @param {matrix} meanShape The mean shape of the current landmarks set.
-   * @return {array} The binary features extracted from the image and matched with the
-   *     training data.
-   * @static
-   */
-  tracking.LBF.Regressor.deriveBinaryFeat = function(forest, images, currentShapes, boundingBoxes, meanShape){
-
-    var binaryFeatures = new Array(images.length);
-    for(var i=0; i < images.length; i++){
-      var t = forest.maxNumTrees * forest.landmarkNum + 1;
-      binaryFeatures[i] = new Array(t);
-      for(var j=0; j < t; j++){
-        binaryFeatures[i][j] = {};
-      }
-    }
-
-    var leafnodesPerTree = 1 << (forest.maxDepth - 1);
-
-    for(var i=0; i < images.length; i++){
-
-      var projectedShape = tracking.LBF.unprojectShapeToBoundingBox_(currentShapes[i], boundingBoxes[i]);
-      var transform = tracking.LBF.similarityTransform_(projectedShape, meanShape);
-      
-      for(var j=0; j < forest.landmarkNum; j++){
-        for(var k=0; k < forest.maxNumTrees; k++){
-
-          var binaryCode = tracking.LBF.Regressor.getCodeFromTree(forest.rfs[j][k], images[i], 
-                              currentShapes[i], boundingBoxes[i], transform[0], transform[1]);
-
-          var index = j*forest.maxNumTrees + k;
-          binaryFeatures[i][index].index = leafnodesPerTree * index + binaryCode;
-          binaryFeatures[i][index].value = 1;
-
-        }
-      }
-      binaryFeatures[i][forest.landmarkNum * forest.maxNumTrees].index = -1;
-      binaryFeatures[i][forest.landmarkNum * forest.maxNumTrees].value = -1;
-    }
-    return binaryFeatures;
-
-  }
-
-  /**
-   * Gets the binary code for a specific tree in a random forest. For each landmark,
-   * the position from two pre-defined points are recovered from the training data
-   * and then the intensity of the pixels corresponding to these points is extracted 
-   * from the image and used to traverse the trees in the random forest. At the end,
-   * the ending nodes will be represented by 1, and the remaining nodes by 0.
-   * 
-   * +--------------------------- Random Forest -----------------------------+ 
-   * | Ø = Ending leaf                                                       |
-   * |                                                                       |
-   * |       O             O             O             O             O       |
-   * |     /   \         /   \         /   \         /   \         /   \     |
-   * |    O     O       O     O       O     O       O     O       O     O    |
-   * |   / \   / \     / \   / \     / \   / \     / \   / \     / \   / \   |
-   * |  Ø   O O   O   O   O Ø   O   O   Ø O   O   O   O Ø   O   O   O O   Ø  |
-   * |  1   0 0   0   0   0 1   0   0   1 0   0   0   0 1   0   0   0 0   1  |
-   * +-----------------------------------------------------------------------+
-   * Final binary code for this landmark: 10000010010000100001
-   *
-   * @param {object} forest The tree to be analyzed.
-   * @param {array} image The image with pixels in a grayscale linear array.
-   * @param {matrix} shape The current landmarks shape.
-   * @param {object} boudingBoxes The bounding box of the face.
-   * @param {matrix} rotation The rotation matrix used to transform the projected landmarks
-   *     into the mean shape.
-   * @param {number} scale The scale factor used to transform the projected landmarks
-   *     into the mean shape.
-   * @return {number} The binary code extracted from the tree.
-   * @static
-   */
-  tracking.LBF.Regressor.getCodeFromTree = function(tree, image, shape, boundingBox, rotation, scale){
-    var current = 0;
-    var bincode = 0;
-
-    while(true){
-      
-      var x1 = Math.cos(tree.nodes[current].feats[0]) * tree.nodes[current].feats[2] * tree.maxRadioRadius * boundingBox.width;
-      var y1 = Math.sin(tree.nodes[current].feats[0]) * tree.nodes[current].feats[2] * tree.maxRadioRadius * boundingBox.height;
-      var x2 = Math.cos(tree.nodes[current].feats[1]) * tree.nodes[current].feats[3] * tree.maxRadioRadius * boundingBox.width;
-      var y2 = Math.sin(tree.nodes[current].feats[1]) * tree.nodes[current].feats[3] * tree.maxRadioRadius * boundingBox.height;
-
-      var project_x1 = rotation[0][0] * x1 + rotation[0][1] * y1;
-      var project_y1 = rotation[1][0] * x1 + rotation[1][1] * y1;
-
-      var real_x1 = Math.floor(project_x1 + shape[tree.landmarkID][0]);
-      var real_y1 = Math.floor(project_y1 + shape[tree.landmarkID][1]);
-      real_x1 = Math.max(0.0, Math.min(real_x1, image.height - 1.0));
-      real_y1 = Math.max(0.0, Math.min(real_y1, image.width - 1.0));
-
-      var project_x2 = rotation[0][0] * x2 + rotation[0][1] * y2;
-      var project_y2 = rotation[1][0] * x2 + rotation[1][1] * y2;
-
-      var real_x2 = Math.floor(project_x2 + shape[tree.landmarkID][0]);
-      var real_y2 = Math.floor(project_y2 + shape[tree.landmarkID][1]);
-      real_x2 = Math.max(0.0, Math.min(real_x2, image.height - 1.0));
-      real_y2 = Math.max(0.0, Math.min(real_y2, image.width - 1.0));
-      var pdf = Math.floor(image.data[real_y1*image.width + real_x1]) - 
-          Math.floor(image.data[real_y2 * image.width +real_x2]);
-
-      if(pdf < tree.nodes[current].thresh){
-        current = tree.nodes[current].cnodes[0];
-      }else{
-        current = tree.nodes[current].cnodes[1];
-      }
-
-      if (tree.nodes[current].is_leafnode == 1) {
-        bincode = 1;
-        for (var i=0; i < tree.leafnodes.length; i++) {
-          if (tree.leafnodes[i] == current) {
-            return bincode;
-          }
-          bincode++;
-        }
-        return bincode;
-      }
-
-    }
-
-    return bincode;
-  }
-
-}());
-(function() {
-  /**
-   * Face Alignment via Regressing Local Binary Features (LBF)
-   * This approach has two components: a set of local binary features and
-   * a locality principle for learning those features.
-   * The locality principle is used to guide the learning of a set of highly
-   * discriminative local binary features for each landmark independently.
-   * The obtained local binary features are used to learn a linear regression
-   * that later will be used to guide the landmarks in the alignment phase.
-   * 
-   * @authors: VoxarLabs Team (http://cin.ufpe.br/~voxarlabs)
-   *           Lucas Figueiredo <lsf@cin.ufpe.br>, Thiago Menezes <tmc2@cin.ufpe.br>,
-   *           Thiago Domingues <tald@cin.ufpe.br>, Rafael Roberto <rar3@cin.ufpe.br>,
-   *           Thulio Araujo <tlsa@cin.ufpe.br>, Joao Victor <jvfl@cin.ufpe.br>,
-   *           Tomer Simis <tls@cin.ufpe.br>)
-   */
-  
-  /**
-   * Holds the maximum number of stages that will be used in the alignment algorithm.
-   * Each stage contains a different set of random forests and retrieves the binary
-   * code from a more "specialized" (i.e. smaller) region around the landmarks.
-   * @type {number}
-   * @static
-   */
-  tracking.LBF.maxNumStages = 4;
-
-  /**
-   * Holds the regressor that will be responsible for extracting the local features from 
-   * the image and guide the landmarks using the training data.
-   * @type {object}
-   * @protected
-   * @static
-   */
-  tracking.LBF.regressor_ = null; 
-  
-  /**
-   * Generates a set of landmarks for a set of faces
-   * @param {pixels} pixels The pixels in a linear [r,g,b,a,...] array.
-   * @param {number} width The image width.
-   * @param {number} height The image height.
-   * @param {array} faces The list of faces detected in the image
-   * @return {array} The aligned landmarks, each set of landmarks corresponding
-   *     to a specific face.
-   * @static
-   */
-  tracking.LBF.align = function(pixels, width, height, faces){
-
-    if(tracking.LBF.regressor_ == null){
-      tracking.LBF.regressor_ = new tracking.LBF.Regressor(
-        tracking.LBF.maxNumStages
-      );
-    }
-
-    pixels = tracking.Image.grayscale(pixels, width, height, false);
-
-    pixels = tracking.Image.equalizeHist(pixels, width, height);
-
-    var shapes = new Array(faces.length);
-
-    for(var i in faces){
-
-      faces[i].height = faces[i].width;
-
-      var boundingBox = {};
-      boundingBox.startX = faces[i].x;
-      boundingBox.startY = faces[i].y;
-      boundingBox.width = faces[i].width;
-      boundingBox.height = faces[i].height;
-
-      shapes[i] = tracking.LBF.regressor_.predict(pixels, width, height, boundingBox);
-    }
-
-    return shapes;
-  }
-
-  /**
-   * Unprojects the landmarks shape from the bounding box.
-   * @param {matrix} shape The landmarks shape.
-   * @param {matrix} boudingBox The bounding box.
-   * @return {matrix} The landmarks shape projected into the bounding box.
-   * @static
-   * @protected
-   */
-  tracking.LBF.unprojectShapeToBoundingBox_ = function(shape, boundingBox){
-    var temp = new Array(shape.length);
-    for(var i=0; i < shape.length; i++){
-      temp[i] = [
-        (shape[i][0] - boundingBox.startX) / boundingBox.width,
-        (shape[i][1] - boundingBox.startY) / boundingBox.height
-      ];
-    }
-    return temp;
-  }
-
-  /**
-   * Projects the landmarks shape into the bounding box. The landmarks shape has
-   * normalized coordinates, so it is necessary to map these coordinates into
-   * the bounding box coordinates.
-   * @param {matrix} shape The landmarks shape.
-   * @param {matrix} boudingBox The bounding box.
-   * @return {matrix} The landmarks shape.
-   * @static
-   * @protected
-   */
-  tracking.LBF.projectShapeToBoundingBox_ = function(shape, boundingBox){
-    var temp = new Array(shape.length);
-    for(var i=0; i < shape.length; i++){
-      temp[i] = [
-        shape[i][0] * boundingBox.width + boundingBox.startX,
-        shape[i][1] * boundingBox.height + boundingBox.startY
-      ];
-    }
-    return temp;
-  }
-
-  /**
-   * Calculates the rotation and scale necessary to transform shape1 into shape2.
-   * @param {matrix} shape1 The shape to be transformed.
-   * @param {matrix} shape2 The shape to be transformed in.
-   * @return {[matrix, scalar]} The rotation matrix and scale that applied to shape1
-   *     results in shape2.
-   * @static
-   * @protected
-   */
-  tracking.LBF.similarityTransform_ = function(shape1, shape2){
-
-    var center1 = [0,0];
-    var center2 = [0,0];
-    for (var i = 0; i < shape1.length; i++) {
-      center1[0] += shape1[i][0];
-      center1[1] += shape1[i][1];
-      center2[0] += shape2[i][0];
-      center2[1] += shape2[i][1];
-    }
-    center1[0] /= shape1.length;
-    center1[1] /= shape1.length;
-    center2[0] /= shape2.length;
-    center2[1] /= shape2.length;
-
-    var temp1 = tracking.Matrix.clone(shape1);
-    var temp2 = tracking.Matrix.clone(shape2);
-    for(var i=0; i < shape1.length; i++){
-      temp1[i][0] -= center1[0];
-      temp1[i][1] -= center1[1];
-      temp2[i][0] -= center2[0];
-      temp2[i][1] -= center2[1];
-    }
-
-    var covariance1, covariance2;
-    var mean1, mean2;
-
-    var t = tracking.Matrix.calcCovarMatrix(temp1);
-    covariance1 = t[0];
-    mean1 = t[1];
-
-    t = tracking.Matrix.calcCovarMatrix(temp2);
-    covariance2 = t[0];
-    mean2 = t[1];
-
-    var s1 = Math.sqrt(tracking.Matrix.norm(covariance1));
-    var s2 = Math.sqrt(tracking.Matrix.norm(covariance2));
-
-    var scale = s1/s2;
-    temp1 = tracking.Matrix.mulScalar(1.0/s1, temp1);
-    temp2 = tracking.Matrix.mulScalar(1.0/s2, temp2);
-
-    var num = 0, den = 0;
-    for (var i = 0; i < shape1.length; i++) {
-      num = num + temp1[i][1] * temp2[i][0] - temp1[i][0] * temp2[i][1];
-      den = den + temp1[i][0] * temp2[i][0] + temp1[i][1] * temp2[i][1];
-    }
-
-    var norm = Math.sqrt(num*num + den*den);
-    var sin_theta = num/norm;
-    var cos_theta = den/norm;
-    var rotation = [
-      [cos_theta, -sin_theta],
-      [sin_theta, cos_theta]
-    ];
-
-    return [rotation, scale];
-  }
-
-  /**
-   * LBF Random Forest data structure.
-   * @static
-   * @constructor
-   */
-  tracking.LBF.RandomForest = function(forestIndex){
-    this.maxNumTrees = tracking.LBF.RegressorData[forestIndex].max_numtrees;
-    this.landmarkNum = tracking.LBF.RegressorData[forestIndex].num_landmark;
-    this.maxDepth = tracking.LBF.RegressorData[forestIndex].max_depth;
-    this.stages = tracking.LBF.RegressorData[forestIndex].stages; 
-
-    this.rfs = new Array(this.landmarkNum);
-    for(var i=0; i < this.landmarkNum; i++){
-      this.rfs[i] = new Array(this.maxNumTrees);
-      for(var j=0; j < this.maxNumTrees; j++){
-        this.rfs[i][j] = new tracking.LBF.Tree(forestIndex, i, j);
-      }
-    }
-  }
-
-  /**
-   * LBF Tree data structure.
-   * @static
-   * @constructor
-   */
-  tracking.LBF.Tree = function(forestIndex, landmarkIndex, treeIndex){
-    var data = tracking.LBF.RegressorData[forestIndex].landmarks[landmarkIndex][treeIndex];
-    this.maxDepth = data.max_depth;
-    this.maxNumNodes = data.max_numnodes;
-    this.nodes = data.nodes;
-    this.landmarkID = data.landmark_id;
-    this.numLeafnodes = data.num_leafnodes;
-    this.numNodes = data.num_nodes;
-    this.maxNumFeats = data.max_numfeats;
-    this.maxRadioRadius = data.max_radio_radius;
-    this.leafnodes = data.id_leafnodes;
-  }
 
 }());
