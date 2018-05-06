@@ -45,11 +45,11 @@
        if (event.data.length  === 0) {
 
              // No colors were detected in this frame
-             // div_counter.innerHTML= count;
+             div_counter.innerHTML= count;
     
        } else {
               count++;
-              //div_counter.innerHTML= count;
+              div_counter.innerHTML= count;
               event.data.forEach(function(rect) {
                   window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
               });
