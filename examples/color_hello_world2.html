@@ -42,7 +42,7 @@
       var div_counter = document.getElementById('counter_div');
 
       tracker.on('track', function(event) {
-       if (event.data.length  < 1) {
+       if (event.data.length  === 1) {
 
              // No colors were detected in this frame
              // div_counter.innerHTML= count;
