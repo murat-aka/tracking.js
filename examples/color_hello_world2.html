@@ -21,11 +21,10 @@
   <div class="demo-title">
     <p><a href="http://trackingjs.com" target="_parent">tracking.js</a> － detect certain colors in a image</p>
   </div>
-
-  <div class="demo-frame">
-    <div id="counter_div">
+  <div id="counter_div">
         Area
-    </div>
+  </div>
+  <div class="demo-frame">
     <div class="demo-container">
       <img id="img" src="assets/psmove.png" />
     </div>
@@ -48,7 +47,7 @@
     
          } else {
               count++;
-              div_counter.innerHTML= count;
+              //div_counter.innerHTML= count;
               event.data.forEach(function(rect) {
                   window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
               });
