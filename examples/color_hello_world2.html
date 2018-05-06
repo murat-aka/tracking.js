@@ -40,19 +40,19 @@
       var div_counter = document.getElementById('counter_div');
 
       tracker.on('track', function(event) {
-         if (event.data.length  < 1) {
+       if (event.data.length  < 1) {
 
              // No colors were detected in this frame
              // div_counter.innerHTML= count;
     
-         } else {
+        } else {
               count++;
               //div_counter.innerHTML= count;
               event.data.forEach(function(rect) {
                   window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
               });
-         }
-      });
+        }
+      
 
       });
       tracking.track('#img', tracker);
