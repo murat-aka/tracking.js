@@ -54,7 +54,7 @@
         }
       
 
-      }
+      });
       tracking.track('#img', tracker);
       window.plot = function(x, y, w, h, color) {
         var rect = document.createElement('div');
@@ -67,8 +67,8 @@
         rect.style.top = (img.offsetTop + y) + 'px';
         // Real-time area;
         //rect.innerHTML = h*w;
-      }
-    }
+      };
+    };
   </script>
 
 </body>
