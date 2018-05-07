@@ -26,7 +26,8 @@
   </div>
 
   <div class="demo-frame">
-    <div id="color_type_div">color_type</div>
+    <div id="color_type_yellow_div">color_type_yellow</div>
+    <div id="color_type_green_div">color_type_green</div>
     <div class="demo-container">
       <video id="video" width="600" height="450" preload autoplay loop muted controls></video>
       <canvas id="canvas" width="600" height="450"></canvas>
@@ -38,10 +39,19 @@
       var video = document.getElementById('video');
       var canvas = document.getElementById('canvas');
       var context = canvas.getContext('2d');
-      var div_cType = document.getElementById('color_type_div');
-      var counter = 0;
+      var div_cType_yellow = document.getElementById('color_type_yellow_div');
+      var div_cType_green = document.getElementById('color_type_green_div');
+      var counter_yellow = 0;
+      var counter_green = 0;
       
-      var tracker = new tracking.ColorTracker(['yellow']);
+      tracking.ColorTracker.registerColor('green', function(r, g, b) {
+          if ((r < 200) && (g > 200) && (b < 150)) {
+           return true;
+          }
+          return false;
+      });
+      
+      var tracker = new tracking.ColorTracker(['yellow','green']);
 
       tracking.track('#video', tracker, { camera: true });
 
@@ -54,8 +64,14 @@
           }
           
           if(rect.color === 'yellow'){
-            counter++;
-            div_cType.innerHTML = rect.color + " detected " + counter + " times";
+            counter_yellow++;
+            div_cType_yellow.innerHTML = rect.color + " detected " + counter_yellow + " times";
+            
+          }
+
+          if(rect.color === 'green'){
+            counter_green++;
+            div_cType_green.innerHTML = rect.color + " detected " + counter_green + " times";
             
           }
 
